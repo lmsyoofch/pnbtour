@@ -28,5 +28,32 @@ renderCities();renderGuide();renderPlaces();renderMap();applyZoom();
 
 function escapePhotoText(t){return String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function placePhoto(p){const photo=placePhotos[p.id];return photo?`<figure class="place-photo"><a href="${photo.source}" target="_blank" rel="noopener" aria-label="Photo source for ${escapePhotoText(p.name)}"><img src="${photo.file}" alt="${escapePhotoText(photo.alt)}" loading="lazy" width="700" height="440"></a><figcaption><span>Place reference photo</span><a href="${photo.source}" target="_blank" rel="noopener">${escapePhotoText(photo.author)}</a>${photo.licenseUrl?`<a href="${photo.licenseUrl}" target="_blank" rel="noopener">${escapePhotoText(photo.license)}</a>`:`<span>${escapePhotoText(photo.license)}</span>`}</figcaption></figure>`:`<div class="photo-unavailable"><span>${p.type==='Food & coffee'?'☕':'⌖'}</span><strong>${p.city}</strong><a href="${mapURL(p.name+' '+p.city)}" target="_blank" rel="noopener">View photos on Google Maps ↗</a></div>`}
-function showPage(){const hash=location.hash;const page=hash==='#places'?'places':hash==='#giveaway'?'giveaway':'tour';document.querySelectorAll('[data-page]').forEach(el=>el.hidden=el.dataset.page!==page);document.querySelectorAll('header nav a').forEach(a=>{const active=(page==='tour'&&a.hash==='#tourMap')||a.hash==='#'+page;if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});const target=hash?document.querySelector(hash):null;if(target&&!target.hidden)requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));}
-window.addEventListener('hashchange',showPage);showPage();
+// Keep browser refreshes at the top of the selected tab.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+function pageForHash(hash) { return hash === '#places' ? 'places' : hash === '#giveaway' ? 'giveaway' : 'tour'; }
+function topOfPage() { window.scrollTo({top:0,left:0,behavior:'instant'}); }
+function showPage(scrollToSection = true) {
+  const hash = location.hash;
+  const page = pageForHash(hash);
+  document.querySelectorAll('[data-page]').forEach(el => el.hidden = el.dataset.page !== page);
+  document.querySelectorAll('header nav a').forEach(a => {
+    const active = (page === 'tour' && a.hash === '#tourMap') || a.hash === '#' + page;
+    if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+  const target = hash ? document.getElementById(hash.slice(1)) : null;
+  if (scrollToSection && target && !target.hidden) requestAnimationFrame(() => target.scrollIntoView({block:'start'}));
+}
+window.addEventListener('hashchange', () => showPage(true));
+document.querySelectorAll('header nav a, header > .brand').forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    history.pushState(null, '', link.hash || location.pathname + location.search);
+    showPage(false);
+    topOfPage();
+  });
+});
+window.addEventListener('popstate', () => { showPage(false); topOfPage(); });
+showPage(false);
+topOfPage();
+window.addEventListener('load', topOfPage, {once:true});
+window.addEventListener('pageshow', topOfPage);

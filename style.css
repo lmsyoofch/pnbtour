@@ -36,3 +36,69 @@
 @media(max-width:650px){.photo-stack{padding:0 4px;max-width:390px;gap:12px}.hero-photo{height:auto;border-width:7px}.photo-label{padding:15px 9px}.photo-label strong{font-size:21px}.next-ticket small{font-size:10px}.next-ticket strong{font-size:21px}header nav{left:3%;width:94%;padding:14px 5px}header nav a{font-size:11px;padding:5px 2px}.giveaway-layout{grid-template-columns:1fr;gap:26px;padding:20px;border-radius:14px}.giveaway-copy h3{font-size:31px}.giveaway-details{padding:18px}.giveaway-details dl div{flex-direction:column;gap:3px}.giveaway-details dd{text-align:left}.giveaway-section{padding-top:32px}}
 
 [hidden]{display:none!important}header nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px}#tourMap{margin-top:32px}#places,#giveaway{padding-top:35px}#mapDetail .button{font-size:13px}.photo-stack{gap:10px}
+
+/* Navigation update: a normal tab row below the brand header. */
+header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  height: auto;
+  min-height: 0;
+  gap: 0 20px;
+  padding: 0;
+  position: static;
+}
+header > .brand { grid-column: 1; grid-row: 1; margin: 24px 0 24px 5vw; }
+header > .credit { grid-column: 2; grid-row: 1; margin-right: 5vw; }
+header nav {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: static;
+  inset: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0 5%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  background: #fff0f6;
+  color: #72123e;
+  border: 0;
+  border-top: 1px solid #e5a4c2;
+  border-bottom: 1px solid #e5a4c2;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  transform: none;
+  z-index: auto;
+}
+header nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 54px;
+  padding: 12px 8px;
+  color: #72123e;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 3px solid transparent;
+  text-decoration: none;
+}
+header nav a[aria-current="page"] {
+  background: #ffd8e9;
+  color: #650d35;
+  border-bottom-color: #97114c;
+  text-decoration: none;
+}
+header nav a:hover { background: #ffe1ee; text-decoration: none; }
+footer { padding-bottom: 30px; }
+@media (max-width: 650px) {
+  header { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 0; padding: 0; }
+  header > .brand { margin: 22px 5%; }
+  header > .credit { display: none; }
+  header nav { padding: 0 3%; }
+  header nav a { min-height: 52px; padding: 12px 4px; font-size: 13px; }
+}
+
+/* The navigation stays in the document below the header branding. */
+header nav { position:static !important; inset:auto !important; transform:none !important; border-radius:0 !important; box-shadow:none !important; width:100% !important; }
