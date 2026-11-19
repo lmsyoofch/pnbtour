@@ -52,6 +52,18 @@ document.querySelectorAll('header nav a, header > .brand').forEach(link => {
     topOfPage();
   });
 });
+// Handle section links explicitly, including repeat clicks on the current hash.
+// Delegation also covers links created when a map city is selected.
+document.addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const link = event.target.closest('a[href^="#"]');
+  if (!link || !link.hash || link.target === '_blank') return;
+  const target = document.getElementById(link.hash.slice(1));
+  if (!target) return;
+  event.preventDefault();
+  if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+  showPage(true);
+});
 window.addEventListener('popstate', () => { showPage(false); topOfPage(); });
 showPage(false);
 topOfPage();
